@@ -4,15 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos parcial</title>
-    <script>
-
-    </script>
+   
     <style>
+        .container {
+    max-width: 800px;
+    margin: 0 auto;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table th, table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    table th {
+        background-color: #f2f2f2;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
 
     </style>
 </head>
 <body>
+    <div class="container">
+        <form id="formDatos">
+            
+                <select class="" id="FiltroPor" >
+                    <option value="todos">Todos</option>
+                    <option value="futbolistas">Futbolistas</option>
+                    <option value="profesionales">Profesionales</option>
+                </select>
+            
+            <label for="calcularEdadPromedio">Calcular edad promedio:</label>
+            <input type="text" id="calcularEdadPromedio">
+            <button id="botonCalcular">Calcular</button>
+
+
+            
+        </form>
+        <form id="formularioABM" style="display: none;">
+            <!-- Aquí se mostrará el formulario para agregar/editar personas -->
+        </form>
+    </div>
+
     
     
+    <script>
+
+        const data = '[{"id":1, "nombre":"Marcelo", "apellido":"Luque", "edad":45, "ventas":15000, "sueldo":2000},{"id":2, "nombre":"Ramiro", "apellido":"Escobar", "edad":35, "ventas": 6000, "sueldo": 1000},{"id":3, "nombre":"Facundo", "apellido":"Cairo", "edad":30, "ventas":500, "sueldo":15000},{"id":4, "nombre":"Fernando", "apellido":"Nieto", "edad":18, "compras":8000, "telefono":"152111131"},{"id":5, "nombre":"Manuel", "apellido":"Loza", "edad":20, "compras":50000, "telefono":"42040077"},{"id":666, "nombre":"Nicolas", "apellido":"Serrano", "edad":23, "compras":7000, "telefono":"1813181563"}]';
+
+        const objetos = JSON.parse(data).map(item => {
+            if (item.hasOwnProperty('ventas')) {
+                return new Empleado(item.id, item.nombre, item.apellido, item.edad, item.ventas, item.sueldo);
+            } else {
+                return new Cliente(item.id, item.nombre, item.apellido, item.edad, item.compras, item.telefono);
+            }
+        });
+
+
+
+
+        
+        class Persona{
+            constructor(id,nombre,apellido,edad){
+                this.id = id;
+                this.nombre = nombre;
+                this.apellido = apellido;
+                this.edad = edad;
+
+                if (!id) {
+                throw new Error("El ID es obligatorio.");
+                }
+                if (!nombre) {
+                    throw new Error("El nombre es obligatorio.");
+                }
+                if (!apellido) {
+                    throw new Error("El apellido es obligatorio.");
+                }
+                if (edad <= 15) {
+                    throw new Error("La edad debe ser mayor a 15.");
+                }
+
+            }
+
+            
+            tostring(){
+                return `${this.nombre} ${this.apellido}`;
+            }
+
+            tojson(){
+                return Json.stringify(this);
+            }
+        }
+
+        class Empleado extends Persona{
+            constructor(id,nombre,apellido,edad,sueldo,ventas){
+                super(id,nombre,apellido,edad);
+                if (!sueldo || sueldo <= 0) {
+                    throw new Error("El sueldo debe ser un valor mayor a cero.");
+                }
+                if (!ventas || ventas <= 0) {
+                    throw new Error("Las ventas deben ser un valor mayor a cero.");
+                }
+                this.sueldo = sueldo;
+                this.ventas = ventas;
+
+            }
+            toString() {
+                return `Empleado: ${super.toString()}, Sueldo: ${this.sueldo}, Ventas: ${this.ventas}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        class Cliente extends Persona {
+            constructor(id, nombre, apellido, edad, compras, telefono) {
+                super(id, nombre, apellido, edad);
+                if (!compras || compras <= 0) {
+                    throw new Error("Las compras deben ser un valor mayor a cero.");
+                }
+                if (!telefono) {
+                    throw new Error("El teléfono es obligatorio.");
+                }
+                this.compras = compras;
+                this.telefono = telefono;
+            }
+
+            toString() {
+                return `Cliente: ${super.toString()}, Compras: ${this.compras}, Teléfono: ${this.telefono}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        const formDatos = document.getElementById('formDatos');
+
+        function mostrarDatos(personas) {
+            formDatos.innerHTML = ''; // Limpiar el formulario antes de mostrar los datos
+
+            personas.forEach(persona => {
+                const row = document.createElement('div');
+                row.innerHTML = `
+                    <p>ID: ${persona.id}</p>
+                    <p>Nombre: ${persona.nombre}</p>
+                    <p>Apellido: ${persona.apellido}</p>
+                    <p>Edad: ${persona.edad}</p>
+                    ${persona instanceof Empleado ? `<p>Ventas: ${persona.ventas}</p><p>Sueldo: ${persona.sueldo}</p>` : `<p>Compras: ${persona.compras}</p><p>Teléfono: ${persona.telefono}</p>`}
+                `;
+                formDatos.appendChild(row);
+            });
+        }
+
+        mostrarDatos(objetos); // Mostrar los datos al cargar la página
+
+        const filtro = document.getElementById('filtro');
+
+        filtro.addEventListener('change', () => {
+            const valorFiltro = filtro.value;
+            let personasFiltradas;
+
+            if (valorFiltro === 'Todos') {
+                personasFiltradas = objetos;
+            } else if (valorFiltro === 'Empleados') {
+                personasFiltradas = objetos.filter(persona => persona instanceof Empleado);
+            } else if (valorFiltro === 'Clientes') {
+                personasFiltradas = objetos.filter(persona => persona instanceof Cliente);
+            }
+
+            mostrarDatos(personasFiltradas);
+        });
+
+        // Función para mostrar el formulario ABM con los datos de la persona seleccionada o vacío
+        function mostrarFormularioABM(persona = null) {
+            const formularioABM = document.getElementById('formularioABM');
+            formularioABM.style.display = 'block';
+
+            // Lógica para mostrar los datos de la persona seleccionada o limpiar los campos para un alta
+            if (persona) {
+                // Llenar los campos del formulario con los datos de la persona seleccionada
+                // Aquí deberías tener lógica para llenar los campos según el tipo de persona (Empleado o Cliente)
+            } else {
+                // Limpiar los campos del formulario para un alta
+                // Aquí deberías tener lógica para limpiar todos los campos del formulario
+            }
+        }
+
+        formDatos.addEventListener('dblclick', (event) => {
+            const fila = event.target.closest('div');
+            const id = parseInt(fila.querySelector('p:first-child').textContent.split(':')[1].trim());
+            const personaSeleccionada = objetos.find(persona => persona.id === id);
+            mostrarFormularioABM(personaSeleccionada);
+        });
+
+        const btnAgregar = document.getElementById('agregar');
+        btnAgregar.addEventListener('click', () => {
+            mostrarFormularioABM();
+        });
+
+        // Función para ocultar el formulario ABM y mostrar los datos actualizados en "Form Datos"
+        function actualizarDatos() {
+            // Lógica para actualizar los datos en "Form Datos"
+            // Por ejemplo, podrías volver a mostrar todos los datos o solo los datos filtrados según el tipo de persona seleccionada
+            // mostrarDatos(objetos);
+        }
+
+        // Lógica para el botón "Guardar" del formulario ABM
+        const btnGuardar = document.getElementById('guardar');
+        btnGuardar.addEventListener('click', () => {
+            // Lógica para guardar los datos ingresados en el formulario
+            // Por ejemplo, podrías actualizar los datos de la persona seleccionada o agregar una nueva persona al array de objetos
+            actualizarDatos();
+        });
+
+        // Lógica para el botón "Eliminar" del formulario ABM
+        const btnEliminar = document.getElementById('eliminar');
+        btnEliminar.addEventListener('click', () => {
+            // Lógica para eliminar la persona seleccionada
+            // Por ejemplo, podrías eliminar la persona del array de objetos y luego actualizar los datos en "Form Datos"
+            actualizarDatos();
+        });
+
+        // Lógica para el botón "Cancelar" del formulario ABM
+        const btnCancelar = document.getElementById('cancelar');
+        btnCancelar.addEventListener('click', () => {
+            // Ocultar el formulario ABM
+            document.getElementById('formularioABM').style.display = 'none';
+        });
+
+        // Función para ordenar los datos por una columna específica
+        function ordenarPorColumna(columna) {
+            // Lógica para ordenar los datos por la columna clickeada
+            // Por ejemplo, podrías usar el método sort() para ordenar el array de objetos según la propiedad correspondiente a la columna clickeada
+            // Luego, podrías volver a mostrar los datos en "Form Datos" con la función mostrarDatos()
+        }
+
+        // Obtener todas las columnas de la tabla y agregar listeners para el evento click
+        document.querySelectorAll('th').forEach(columna => {
+            columna.addEventListener('click', () => {
+                ordenarPorColumna(columna.textContent);
+            });
+        });
+
+        // Obtener todos los checkboxes correspondientes a las columnas de la tabla
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const columna = checkbox.getAttribute('data-columna');
+                const columnasTabla = document.querySelectorAll(`td:nth-child(${parseInt(columna) + 1})`);
+
+                if (checkbox.checked) {
+                    columnasTabla.forEach(columna => columna.style.display = 'table-cell');
+                } else {
+                    columnasTabla.forEach(columna => columna.style.display = 'none');
+                }
+            });
+        });
+
+
+
+
+
+
+    </script>
 </body>
 </html>

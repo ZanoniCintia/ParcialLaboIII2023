@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos ABM</title>
+</head>
+<body>
+    <h1>Form Datos</h1>
+    <label for="FiltroPor">Filtrar Por:
+        <select id="FiltroPor" >
+            <option value="todos">Todos</option>
+            <option value="futbolistas">Futbolistas</option>
+            <option value="profesionales">Profesionales</option>
+        </select>
+    </label>
+    <br><br>
+    <label for="inputEdad">Calcular Edad promedio
+        <input type="text" >
+        <button for="inputEdad">Calcular</button>
+    </label>
+    <br><br>
+    <label for="MostarColumnas">Mostrar columnas
+        <div id="filtros">
+            <label><input type="checkbox" class="columna" data-columna="id" checked> ID</label>
+            <label><input type="checkbox" class="columna" data-columna="nombre" checked> Nombre</label>
+            <label><input type="checkbox" class="columna" data-columna="apellido" checked> Apellido</label>
+            <label><input type="checkbox" class="columna" data-columna="edad" checked> Edad</label>
+            <label><input type="checkbox" class="columna" data-columna="equipo" checked> Equipo</label>
+            <label><input type="checkbox" class="columna" data-columna="posicion" checked> Posición</label>
+            <label><input type="checkbox" class="columna" data-columna="goles" checked> Cantidad de Goles</label>
+            <label><input type="checkbox" class="columna" data-columna="titulo" checked> Título</label>
+            <label><input type="checkbox" class="columna" data-columna="facultad" checked> Facultad</label>
+            <label><input type="checkbox" class="columna" data-columna="añograd" checked> Año Graduado</label>
+        </div>
+    </label>
+
+    <table id="tabla">
+        <thead>
+            <tr id="encabezado">
+                <th data-columna="id">ID</th>
+                <th data-columna="nombre">Nombre</th>
+                <th data-columna="apellido">Apellido</th>
+                <th data-columna="edad">Edad</th>
+                <th data-columna="equipo">Equipo</th>
+                <th data-columna="posicion">Posición</th>
+                <th data-columna="goles">Cantidad de Goles</th>
+                <th data-columna="titulo">Título</th>
+                <th data-columna="facultad">Facultad</th>
+                <th data-columna="añograd">Año Graduado</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    
+        <script>
+             const checkboxes = document.querySelectorAll('.columna');
+        const tabla = document.getElementById('tabla');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const columna = checkbox.getAttribute('data-columna');
+                const columnasTabla = document.querySelectorAll(`[data-columna="${columna}"]`);
+                columnasTabla.forEach(columna => {
+                    if (checkbox.checked) {
+                        columna.style.display = 'table-cell';
+                    } else {
+                        columna.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        const data = '[{"id":1, "nombre":"Marcelo", "apellido":"Luque", "edad":45, "ventas":15000, "sueldo":2000},{"id":2, "nombre":"Ramiro", "apellido":"Escobar", "edad":35, "ventas": 6000, "sueldo": 1000},{"id":3, "nombre":"Facundo", "apellido":"Cairo", "edad":30, "ventas":500, "sueldo":15000},{"id":4, "nombre":"Fernando", "apellido":"Nieto", "edad":18, "compras":8000, "telefono":"152111131"},{"id":5, "nombre":"Manuel", "apellido":"Loza", "edad":20, "compras":50000, "telefono":"42040077"},{"id":666, "nombre":"Nicolas", "apellido":"Serrano", "edad":23, "compras":7000, "telefono":"1813181563"}]';
+
+        const objetos = JSON.parse(data).map(item => {
+            if (item.hasOwnProperty('ventas')) {
+                return new Empleado(item.id, item.nombre, item.apellido, item.edad, item.ventas, item.sueldo);
+            } else {
+                return new Cliente(item.id, item.nombre, item.apellido, item.edad, item.compras, item.telefono);
+            }
+        });
+
+
+
+
+        
+        class Persona{
+            constructor(id,nombre,apellido,edad){
+                this.id = id;
+                this.nombre = nombre;
+                this.apellido = apellido;
+                this.edad = edad;
+
+                if (!id) {
+                throw new Error("El ID es obligatorio.");
+                }
+                if (!nombre) {
+                    throw new Error("El nombre es obligatorio.");
+                }
+                if (!apellido) {
+                    throw new Error("El apellido es obligatorio.");
+                }
+                if (edad <= 15) {
+                    throw new Error("La edad debe ser mayor a 15.");
+                }
+
+            }
+
+            
+            tostring(){
+                return `${this.nombre} ${this.apellido}`;
+            }
+
+            tojson(){
+                return Json.stringify(this);
+            }
+        }
+
+        class Empleado extends Persona{
+            constructor(id,nombre,apellido,edad,sueldo,ventas){
+                super(id,nombre,apellido,edad);
+                if (!sueldo || sueldo <= 0) {
+                    throw new Error("El sueldo debe ser un valor mayor a cero.");
+                }
+                if (!ventas || ventas <= 0) {
+                    throw new Error("Las ventas deben ser un valor mayor a cero.");
+                }
+                this.sueldo = sueldo;
+                this.ventas = ventas;
+
+            }
+            toString() {
+                return `Empleado: ${super.toString()}, Sueldo: ${this.sueldo}, Ventas: ${this.ventas}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        class Cliente extends Persona {
+            constructor(id, nombre, apellido, edad, compras, telefono) {
+                super(id, nombre, apellido, edad);
+                if (!compras || compras <= 0) {
+                    throw new Error("Las compras deben ser un valor mayor a cero.");
+                }
+                if (!telefono) {
+                    throw new Error("El teléfono es obligatorio.");
+                }
+                this.compras = compras;
+                this.telefono = telefono;
+            }
+
+            toString() {
+                return `Cliente: ${super.toString()}, Compras: ${this.compras}, Teléfono: ${this.telefono}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        const datos = '[{"id":1, "nombre":"Marcelo", "apellido":"Luque", "edad":45, "ventas":15000, "sueldo":2000},{"id":2, "nombre":"Ramiro", "apellido":"Escobar", "edad":35, "ventas": 6000, "sueldo": 1000},{"id":3, "nombre":"Facundo", "apellido":"Cairo", "edad":30, "ventas":500, "sueldo":15000},{"id":4, "nombre":"Fernando", "apellido":"Nieto", "edad":18, "compras":8000, "telefono":"152111131"},{"id":5, "nombre":"Manuel", "apellido":"Loza", "edad":20, "compras":50000, "telefono":"42040077"},{"id":666, "nombre":"Nicolas", "apellido":"Serrano", "edad":23, "compras":7000, "telefono":"1813181563"}]';
+
+        const objeto = JSON.parse(data).map(item => {
+            if (item.hasOwnProperty('ventas')) {
+                return new Empleado(item.id, item.nombre, item.apellido, item.edad, item.ventas, item.sueldo);
+            } else {
+                return new Cliente(item.id, item.nombre, item.apellido, item.edad, item.compras, item.telefono);
+            }
+        });
+        </script>
+</body>
+</html>
