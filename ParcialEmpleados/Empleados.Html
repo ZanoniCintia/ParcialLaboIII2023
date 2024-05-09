@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos ABM</title>
+    <style>
+        body{
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            -webkit-box-shadow: 10px 14px 5px 0px rgba(0,0,0,0.75);
+            -moz-box-shadow: 10px 14px 5px 0px rgba(0,0,0,0.75);
+            box-shadow: 10px 14px 5px 0px rgba(0,0,0,0.75);
+            font-weight: bold;
+            background-color: aqua;
+            
+        }
+
+        .contenedor {
+            border: 1px solid #0c0c0c; /* Borde alrededor del contenedor */
+            padding: 50px; /* Espaciado interno del contenedor */
+            width: 90%; /* Ancho del contenedor */
+            background-color: rgb(255, 2, 234);
+            border-radius: 10px;
+        }
+        .FormularioABM{
+            position: center;
+            width: 40%;
+            border: 2px solid aqua; /* Borde alrededor del contenedor */
+            padding: 50px; /* Espaciado interno del contenedor */
+            background-color: rgb(255, 2, 234);
+            border-radius: 10px;
+            -webkit-box-shadow: 10px 14px 5px 0px rgba(0,0,0,0.75);
+            -moz-box-shadow: 10px 14px 5px 0px rgba(0,0,0,0.75);
+            box-shadow: 10px 14px 5px 0px rgba(0,0,0,0.75);
+
+        }
+        /* Estilo para los cuadros de verificación */
+        .columna {
+            /* Hacer los cuadros de verificación visibles */
+            opacity: 1;
+            position: relative;
+            border: 2px solid black;
+            padding: 1px;
+        }
+        .Grilla{
+            display: grid;
+            grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+            border-collapse: collapse; /* Fusiona los bordes de las celdas */
+            
+            grid-gap: 1px; /* Espaciado entre los elementos */
+            border: 2px solid #0a0a0a; /* Borde de 1px sólido */
+            padding: 8px; /* Espaciado interno de las celdas */
+            text-align: left; /* Alineación del texto a la izquierda */
+            background-color: #cc5fcf; /* Color de fondo de las cabeceras */
+            color: rgb(10, 10, 10); /* Color de texto de las cabeceras */
+        }
+        .btnAgregar{
+            background-color: greenyellow;
+        }
+        .btnCalcular{
+            background-color: greenyellow;
+        }
+        .cancela{
+            background-color: red;
+        }
+        .confirma{
+            background-color: green;
+        }
+
+      
+
+        
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Form Datos</h1>
+        <label for="FiltroPor">Filtrar Por:
+            <select id="FiltroPor" >
+                <option value="todos">Todos</option>
+                <option value="empleado">Empleados</option>
+                <option value="cliente">Clientes</option>
+            </select>
+        </label>
+        <br><br>
+        <label for="inputEdad">Calcular Edad promedio
+            <input type="text" >
+            <button for="inputEdad" class="btnCalcular">Calcular</button>
+        </label>
+    
+    <br><br>
+    <label for="MostarColumnas">Mostrar columnas
+        <div id="filtros">
+            <label><input type="checkbox" class="columna" data-columna="id" checked> ID</label>
+            <label><input type="checkbox" class="columna" data-columna="nombre" checked> Nombre</label>
+            <label><input type="checkbox" class="columna" data-columna="apellido" checked> Apellido</label>
+            <label><input type="checkbox" class="columna" data-columna="edad" checked> Edad</label>
+            <label><input type="checkbox" class="columna" data-columna="sueldo" checked> Sueldo</label>
+            <label><input type="checkbox" class="columna" data-columna="ventas" checked> Ventas</label>
+            <label><input type="checkbox" class="columna" data-columna="compras" checked> Compras</label>
+            <label><input type="checkbox" class="columna" data-columna="telefono" checked> Teléfono</label>
+            
+        </div>
+    </label>
+    </div>
+    
+    <button id="agregar" class="btnAgregar">Agregar</button>
+
+    <div class="FormularioABM" id="Formulario" style="display: none;">
+        <h2>Formulario ABM</h2>
+        <label >ID :
+            <input type="text" id="Id">
+        </label>
+        <br>
+        <label >Nombre :
+            <input type="text" id="Nombre">
+        </label>
+        <br>
+        <label >Apellido :
+            <input type="text" id="Apellido">
+        </label>
+        <br>
+        <label >Edad :
+            <input type="text" id="Edad">
+        </label>
+        <br>
+        <label >Tipo :
+            <select id="Tipo" >
+                <option value="Empleado">Seleccionar</option>
+                <option value="Empleado">Empleado</option>
+                <option value="cliente">Cliente</option>
+            </select>
+        </label>
+        <br>
+        <div id="camposEmpleado" style="display: none;">
+            <label for="Sueldo">Sueldo:</label>
+            <input type="text" id="Sueldo">
+            <br>
+            <label for="Ventas">Ventas:</label>
+            <input type="text" id="Ventas">
+            <br>
+            <label for="TelefonoEmpleado">Teléfono:</label>
+            <input type="text" id="TelefonoEmpleado">
+        </div>
+        <div id="camposCliente" style="display: none;">
+            <label for="Compras">Compras:</label>
+            <input type="text" id="Compras">
+            <br>
+            <label for="TelefonoCliente">Teléfono:</label>
+            <input type="text" id="TelefonoCliente">
+        </div>
+
+        <button id="confirmar" class="confirma">Confirmar</button> <button id="cancelar" class="cancela">Cancelar</button>
+
+
+    </div>
+    <table id="tabla" class="table">
+        <thead>
+            <tr id="encabezado">
+                <th data-columna="id">ID</th>
+                <th data-columna="nombre">Nombre</th>
+                <th data-columna="apellido">Apellido</th>
+                <th data-columna="edad">Edad</th>
+                <th data-columna="sueldo">Sueldo</th>
+                <th data-columna="ventas">Ventas</th>
+                <th data-columna="compras">Compras</th>
+                <th data-columna="telefono">Teléfono</th>
+                
+            </tr>
+        </thead>
+        <tbody id="FormDatos_Table_Tbody">
+
+        </tbody>
+    </table>
+    
+    <script>
+
+        //-------------------clases - contructores - array -----------------------------------------------
+
+        class Persona{
+            constructor(id,nombre,apellido,edad){
+                this.id = id;
+                this.nombre = nombre;
+                this.apellido = apellido;
+                this.edad = edad;
+
+                if (!id) {
+                throw new Error("El ID es obligatorio.");
+                }
+                if (!nombre) {
+                    throw new Error("El nombre es obligatorio.");
+                }
+                if (!apellido) {
+                    throw new Error("El apellido es obligatorio.");
+                }
+                if (edad <= 15) {
+                    throw new Error("La edad debe ser mayor a 15.");
+                }
+
+            }
+
+            
+            tostring(){
+                return `${this.nombre} ${this.apellido}`;
+            }
+
+            tojson(){
+                return Json.stringify(this);
+            }
+        }
+
+        class Empleado extends Persona{
+            constructor(id,nombre,apellido,edad,sueldo,ventas){
+                super(id,nombre,apellido,edad);
+                if (!sueldo || sueldo <= 0) {
+                    throw new Error("El sueldo debe ser un valor mayor a cero.");
+                }
+                if (!ventas || ventas <= 0) {
+                    throw new Error("Las ventas deben ser un valor mayor a cero.");
+                }
+                this.sueldo = sueldo;
+                this.ventas = ventas;
+
+            }
+            toString() {
+                return `Empleado: ${super.toString()}, Sueldo: ${this.sueldo}, Ventas: ${this.ventas}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        class Cliente extends Persona {
+            constructor(id, nombre, apellido, edad, compras, telefono) {
+                super(id, nombre, apellido, edad);
+                if (!compras || compras <= 0) {
+                    throw new Error("Las compras deben ser un valor mayor a cero.");
+                }
+                if (!telefono) {
+                    throw new Error("El teléfono es obligatorio.");
+                }
+                this.compras = compras;
+                this.telefono = telefono;
+            }
+
+            toString() {
+                return `Cliente: ${super.toString()}, Compras: ${this.compras}, Teléfono: ${this.telefono}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        const datosJSON = '[{"id":1, "nombre":"Marcelo", "apellido":"Luque", "edad":45, "ventas":15000, "sueldo":2000},{"id":2, "nombre":"Ramiro", "apellido":"Escobar", "edad":35, "ventas": 6000, "sueldo": 1000},{"id":3, "nombre":"Facundo", "apellido":"Cairo", "edad":30, "ventas":500, "sueldo":15000},{"id":4, "nombre":"Fernando", "apellido":"Nieto", "edad":18, "compras":8000, "telefono":"152111131"},{"id":5, "nombre":"Manuel", "apellido":"Loza", "edad":20, "compras":50000, "telefono":"42040077"},{"id":666, "nombre":"Nicolas", "apellido":"Serrano", "edad":23, "compras":7000, "telefono":"1813181563"}]';
+
+        // Convertir la cadena JSON a un arreglo de objetos
+        const datos = JSON.parse(datosJSON);
+
+        const objeto = datos.map(item => {
+            if (item.hasOwnProperty('ventas')) {
+                return new Empleado(item.id, item.nombre, item.apellido, item.edad, item.ventas, item.sueldo);
+            } else {
+                return new Cliente(item.id, item.nombre, item.apellido, item.edad, item.compras, item.telefono);
+            }
+        });
+
+        //------------------------Filtros---------------------------------------------------------------------------------
+        // Filtro form de datos
+        const filtroPor = document.getElementById('FiltroPor');
+        filtroPor.addEventListener('change', () => {
+            const valorSeleccionado = filtroPor.value.toLowerCase(); // Convertir el valor a minúsculas
+            const filasTabla = document.querySelectorAll('#tabla tbody tr'); // Seleccionar las filas de la tabla
+
+            filasTabla.forEach(fila => {
+                const tipo = fila.querySelector('td[data-columna="sueldo"]') ? 'Empleado' : 'cliente'; // Verificar si la fila corresponde a un empleado o cliente
+                if (valorSeleccionado === 'todos' || valorSeleccionado === tipo) { // Verificar si el valor seleccionado coincide con el tipo de fila
+                    fila.style.display = 'table-row';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        });
+
+        // filtro del formulario ABM
+        document.addEventListener("DOMContentLoaded", function() {
+            const tipoSelect = document.getElementById("Tipo");
+            const camposEmpleado = document.getElementById("camposEmpleado");
+            const camposCliente = document.getElementById("camposCliente");
+
+            tipoSelect.addEventListener("change", function() {
+                if (tipoSelect.value === "Empleado") {
+                    camposEmpleado.style.display = "block";
+                    camposCliente.style.display = "none";
+                } else if (tipoSelect.value === "cliente") {
+                    camposEmpleado.style.display = "none";
+                    camposCliente.style.display = "block";
+                }
+            });
+        });
+
+        //------------------------Botones Acciones-------------------------------------------------------------------------
+
+        const botonMostrarFormulario = document.getElementById("agregar");
+        const formulario = document.getElementById("Formulario");
+        const tabla = document.getElementById('tabla');
+        const botonConfirma = document.getElementById("confirmar");
+        const botonCancelar = document.getElementById("cancelar");
+        
+        
+        botonMostrarFormulario.addEventListener("click", function() {
+            // Verificar si el formulario está visible
+            if (formulario.style.display === "none") {
+                // Si está oculto, mostrarlo
+                formulario.style.display = "block";
+            } else {
+                // Si está visible, ocultarlo
+                formulario.style.display = "none";
+            }
+        });
+
+      
+
+        botonConfirma.addEventListener("click", function() {
+            const id = document.getElementById("Id").value;
+            const nombre = document.getElementById("Nombre").value;
+            const apellido = document.getElementById("Apellido").value;
+            const edad = document.getElementById("Edad").value;
+            const tipo = document.getElementById("Tipo").value;
+            let nuevoRegistro;
+
+            if (tipo === "Empleado") {
+                const sueldo = document.getElementById("Sueldo").value;
+                const ventas = document.getElementById("Ventas").value;
+                nuevoRegistro = new Empleado(id, nombre, apellido, edad, sueldo, ventas);
+            } else {
+                const compras = document.getElementById("Compras").value;
+                const telefono = tipo === "cliente" ? document.getElementById("TelefonoCliente").value : document.getElementById("TelefonoEmpleado").value;
+                nuevoRegistro = new Cliente(id, nombre, apellido, edad, compras, telefono);
+            }
+
+            // Crear una nueva fila en la tabla
+            const fila = tabla.insertRow();
+            // Insertar celdas en la fila
+            fila.insertCell().textContent = nuevoRegistro.id;
+            fila.insertCell().textContent = nuevoRegistro.nombre;
+            fila.insertCell().textContent = nuevoRegistro.apellido;
+            fila.insertCell().textContent = nuevoRegistro.edad;
+            if (tipo === "Empleado") {
+                fila.insertCell().textContent = nuevoRegistro.sueldo;
+                fila.insertCell().textContent = nuevoRegistro.ventas;
+                fila.insertCell().textContent = "";
+            } else {
+                fila.insertCell().textContent = "";
+                fila.insertCell().textContent = "";
+                fila.insertCell().textContent = nuevoRegistro.compras;
+            }
+            fila.insertCell().textContent = tipo === "cliente" ? nuevoRegistro.telefono : "";
+        });
+
+        botonCancelar.addEventListener("click", function() {
+            formulario.style.display = "none";
+        });
+
+       // -------------checkboxes----------------------------
+
+        const checkboxes = document.querySelectorAll('.columna');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const columna = checkbox.getAttribute('data-columna');
+                const columnasTabla = document.querySelectorAll(`[data-columna="${columna}"], th[data-columna="${columna}"]`);
+                columnasTabla.forEach(columna => {
+                    if (checkbox.checked) {
+                        columna.style.display = 'table-cell';
+                    } else {
+                        columna.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+  
+
+      
+
+        //---------------------------Mostrar la Tabla---------------------------------------------------------------------------------
+
+        // Función para cargar la tabla
+        function cargarTabla() {
+            var tabla = document.getElementById("tabla").getElementsByTagName('tbody')[0];
+            // Limpiar tabla
+            tabla.innerHTML = '';
+
+             // Llenar la tabla con los datos
+             objeto.forEach(function(item) {
+                var fila = tabla.insertRow();
+                // Iterar sobre las propiedades comunes a Empleado y Cliente
+                ["id", "nombre", "apellido", "edad", "sueldo", "ventas", "compras", "telefono"].forEach(function(prop) {
+                    var celda = fila.insertCell();
+                    // Verificar si la propiedad existe en el objeto
+                    if (item.hasOwnProperty(prop)) {
+                        celda.textContent = item[prop];
+                    } else {
+                        celda.textContent = ""; // Si la propiedad no existe, dejar la celda vacía
+                    }
+                });
+            });         
+        }
+
+        // Llamar a la función para cargar la tabla al cargar la página
+        cargarTabla();
+
+    </script>
+</body>
+</html>
